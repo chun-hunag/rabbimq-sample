@@ -1,0 +1,17 @@
+{
+    "name": "vender/asynchronous-messaging-with-php",
+    "autoload": {
+        "psr-4": {
+            "Vender\\AsynchronousMessagingWithPhp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "chun-huang",
+            "email": "hgfrttlk@gmail.com"
+        }
+    ],
+    "require": {
+        "php-amqplib/php-amqplib": "^2.8"
+    }
+}
