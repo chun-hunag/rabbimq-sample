@@ -1,8 +1,8 @@
 {
-    "name": "vender/asynchronous-messaging-with-php",
+    "name": "rabbitmq-sample/rabbitmq-sample",
     "autoload": {
         "psr-4": {
-            "Vender\\AsynchronousMessagingWithPhp\\": "src/"
+            "Vender\\rabbitmq-sample\\": "src/"
         }
     },
     "authors": [
