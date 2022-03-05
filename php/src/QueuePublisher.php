@@ -12,7 +12,7 @@ use InvalidArgumentException;
  */
 
 $messageStr = getMessageArgv($argv);
-$QueueName = getQueueNameArgv($argv);
+$queueName = getQueueNameArgv($argv);
 
 $connection = new AMQPStreamConnection('localhost', 5672, 'guest', 'guest');
 
@@ -20,11 +20,11 @@ $channel = $connection->channel();
 
 $msg = new AMQPMessage($messageStr);
 $channel->basic_publish($msg);
-$channel->basic_publish($msg, '', $QueueName);
+$channel->basic_publish($msg, '', $queueName);
 $channel->close();
 $connection->close();
 
-echo "Message '$messageStr' has been publish to Queue: '$QueueName'";
+echo "Message '$messageStr' has been publish to Queue: '$queueName'";
 
 function getMessageArgv(array $argv): string
 {
