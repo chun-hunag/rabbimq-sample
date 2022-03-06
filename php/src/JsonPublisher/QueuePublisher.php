@@ -22,7 +22,6 @@ $message->from = 'from_address';
 $message->subject = 'Subject_of_mail';
 
 $msg = new AMQPMessage(json_encode($message));
-$channel->basic_publish($msg);
 $channel->basic_publish($msg, '', $queueName);
 $channel->close();
 $connection->close();
