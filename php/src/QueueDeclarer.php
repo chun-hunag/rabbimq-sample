@@ -14,7 +14,7 @@ $queueName = getQueueNameArgv($argv);
 $connection = new AMQPStreamConnection('localhost', 5672, 'guest', 'guest');
 $channel = $connection->channel();
 
-$result = $channel->queue_declare($queueName, false, true, false, false);
+$channel->queue_declare($queueName, false, true, false, false);
 
 echo "queue: $queueName was declared.";
 
