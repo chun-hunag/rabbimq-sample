@@ -18,7 +18,6 @@ $connection = new AMQPStreamConnection('localhost', 5672, 'guest', 'guest');
 $channel = $connection->channel();
 
 $msg = new AMQPMessage($messageStr);
-$channel->basic_publish($msg);
 $channel->basic_publish($msg, '', $queueName);
 $channel->close();
 $connection->close();
