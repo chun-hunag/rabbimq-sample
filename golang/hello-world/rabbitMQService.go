@@ -91,6 +91,30 @@ func (r *RabbitMQService) Publish(queueName, body string) {
 	}
 }
 
+func (r *RabbitMQService) Consume(queueName, consumerName string) {
+	messages, err := r.channel.Consume(
+		queueName,    // name
+		consumerName, // consumer tags
+		true,         // auto-ack
+		false,        // exclusive
+		false,        // no-local
+		false,        // no-wait
+		nil,          // args
+	)
+	failOnError(err, "Failed to register a consumer")
+
+	forever := make(chan bool)
+
+	go func() {
+		for message := range messages {
+			log.Printf("Received a message: %s", message.Body)
+		}
+	}()
+
+	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
+	<-forever
+}
+
 func failOnError(err error, msg string) {
 	if err != nil {
 		log.Fatalf("%s: %s", msg, err)
