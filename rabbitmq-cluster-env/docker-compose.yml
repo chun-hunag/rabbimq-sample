@@ -1,0 +1,55 @@
+version: "3"
+networks:
+  mqNetwork:
+    driver: ${NETWORKS_DRIVER}
+services:
+  rabbitmq-cluster-01:
+    build: ./
+    hostname: rabbitmq-cluster-01
+    container_name: rabbitmq-cluster-01
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_ERLANG_COOKIE=${RABBITMQ_ERLANG_COOKIE}
+      - RABBITMQ_NODENAME=rabbit@rabbitmq-cluster-01
+    networks:
+      - mqNetwork
+    volumes:
+      - ./config/enabled_pugins:/etpc/rabbitmq/enabled_pugins
+  rabbitmq-cluster-02:
+    build: ./
+    hostname: rabbitmq-cluster-02
+    container_name: rabbitmq-cluster-02
+    ports:
+      - 5673:5672
+      - 15673:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_ERLANG_COOKIE=${RABBITMQ_ERLANG_COOKIE}
+    depends_on:
+      - rabbitmq-cluster-01
+    networks:
+      - mqNetwork
+    volumes:
+      - ./config/enabled_pugins:/etpc/rabbitmq/enabled_pugins
+  rabbitmq-cluster-03:
+    build: ./
+    hostname: rabbitmq-cluster-03
+    container_name: rabbitmq-cluster-03
+    ports:
+      - 5674:5672
+      - 15674:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_ERLANG_COOKIE=${RABBITMQ_ERLANG_COOKIE}
+    depends_on:
+      - rabbitmq-cluster-01
+    networks:
+      - mqNetwork
+    volumes:
+      - ./config/enabled_pugins:/etpc/rabbitmq/enabled_pugins
