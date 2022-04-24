@@ -1,0 +1,21 @@
+#--------------------------------------------------------------------- 
+# common defaults that all the 'listen' and 'backend' sections will 
+# use if not designated in their block 
+#--------------------------------------------------------------------- 
+global
+daemon
+
+    defaults
+    mode tcp
+    maxconn 10000
+    timeout connect 5s
+    timeout client 100s
+    timeout server 100s
+
+listen rabbitmq 
+bind 0.0.0.1:5670
+    mode tcp
+    balance roundrobin
+    server rabbitmaster 127.0.0.1:5672 check inter 5s rise 2 fall 3
+    server rabbitslave 127.0.0.1:5673 check inter 5s rise 2 fall 3
+	

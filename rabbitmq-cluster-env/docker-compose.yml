@@ -4,8 +4,8 @@ networks:
     driver: ${NETWORKS_DRIVER}
 services:
   rabbitmq-cluster-01:
-    build: ./
-    hostname: rabbitmq-cluster-01
+    build: ./rabbitmq/
+    # hostname: rabbitmq-cluster-01
     container_name: rabbitmq-cluster-01
     ports:
       - 5672:5672
@@ -18,9 +18,9 @@ services:
     networks:
       - mqNetwork
     volumes:
-      - ./config/enabled_pugins:/etpc/rabbitmq/enabled_pugins
+      - ./rabbitmq/config/enabled_plugins:/etc/rabbitmq/enabled_plugins
   rabbitmq-cluster-02:
-    build: ./
+    build: ./rabbitmq/
     hostname: rabbitmq-cluster-02
     container_name: rabbitmq-cluster-02
     ports:
@@ -35,9 +35,9 @@ services:
     networks:
       - mqNetwork
     volumes:
-      - ./config/enabled_pugins:/etpc/rabbitmq/enabled_pugins
+      - ./rabbitmq/config/enabled_plugins:/etc/rabbitmq/enabled_plugins
   rabbitmq-cluster-03:
-    build: ./
+    build: ./rabbitmq/
     hostname: rabbitmq-cluster-03
     container_name: rabbitmq-cluster-03
     ports:
@@ -52,4 +52,18 @@ services:
     networks:
       - mqNetwork
     volumes:
-      - ./config/enabled_pugins:/etpc/rabbitmq/enabled_pugins
+      - ./rabbitmq/config/enabled_plugins:/etc/rabbitmq/enabled_plugins
+  haproxy:
+    build: ./haproxy
+    container_name: haproxy
+    ports:
+      - 5670:5670
+      - 8100:8100
+    depends_on:
+      - rabbitmq-cluster-01
+      - rabbitmq-cluster-02
+      - rabbitmq-cluster-03
+    networks:
+      - mqNetwork
+    volumes:
+     - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
