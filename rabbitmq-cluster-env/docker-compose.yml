@@ -4,8 +4,11 @@ networks:
     driver: ${NETWORKS_DRIVER}
 services:
   rabbitmq-cluster-01:
-    build: ./rabbitmq/
-    # hostname: rabbitmq-cluster-01
+    build:
+      context: ./rabbitmq
+      args: 
+        RABBITMQ_VERSION: ${RABBITMQ_VERSION}
+    hostname: rabbitmq-cluster-01
     container_name: rabbitmq-cluster-01
     ports:
       - 5672:5672
@@ -13,48 +16,61 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
-      - RABBITMQ_ERLANG_COOKIE=${RABBITMQ_ERLANG_COOKIE}
-      - RABBITMQ_NODENAME=rabbit@rabbitmq-cluster-01
+      - RABBITMQ_NODENAME=${MASTER_NODE_HOST_NAME}
     networks:
       - mqNetwork
     volumes:
       - ./rabbitmq/config/enabled_plugins:/etc/rabbitmq/enabled_plugins
+
   rabbitmq-cluster-02:
-    build: ./rabbitmq/
+    build:
+      context: ./rabbitmq
+      args: 
+        RABBITMQ_VERSION: ${RABBITMQ_VERSION}
     hostname: rabbitmq-cluster-02
     container_name: rabbitmq-cluster-02
     ports:
       - 5673:5672
       - 15673:15672
     environment:
+      - RABBITMQ_NODENAME=rabbitmq-cluster-02
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
-      - RABBITMQ_ERLANG_COOKIE=${RABBITMQ_ERLANG_COOKIE}
+      - MASTER_NODE_HOST_NAME=${MASTER_NODE_HOST_NAME}
     depends_on:
       - rabbitmq-cluster-01
     networks:
       - mqNetwork
     volumes:
       - ./rabbitmq/config/enabled_plugins:/etc/rabbitmq/enabled_plugins
+
   rabbitmq-cluster-03:
-    build: ./rabbitmq/
+    build:
+      context: ./rabbitmq
+      args: 
+        RABBITMQ_VERSION: ${RABBITMQ_VERSION}
     hostname: rabbitmq-cluster-03
     container_name: rabbitmq-cluster-03
     ports:
       - 5674:5672
       - 15674:15672
     environment:
+      - RABBITMQ_NODENAME=rabbitmq-cluster-03
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
-      - RABBITMQ_ERLANG_COOKIE=${RABBITMQ_ERLANG_COOKIE}
+      - MASTER_NODE_HOST_NAME=${MASTER_NODE_HOST_NAME}
     depends_on:
       - rabbitmq-cluster-01
     networks:
       - mqNetwork
     volumes:
       - ./rabbitmq/config/enabled_plugins:/etc/rabbitmq/enabled_plugins
+
   haproxy:
-    build: ./haproxy
+    build: 
+        context: ./haproxy
+        args: 
+          HAPROXY_VERSION: ${HAPROXY_VERSION}
     container_name: haproxy
     ports:
       - 5670:5670
