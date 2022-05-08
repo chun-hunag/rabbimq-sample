@@ -11,9 +11,9 @@ services:
     hostname: rabbitmq-cluster-01
     container_name: rabbitmq-cluster-01
     ports:
-      - 5672:5672
       - 15672:15672
     environment:
+      - RABBITMQ_NODENAME=rabbitmq
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
       - RABBITMQ_NODENAME=${MASTER_NODE_HOST_NAME}
@@ -30,10 +30,9 @@ services:
     hostname: rabbitmq-cluster-02
     container_name: rabbitmq-cluster-02
     ports:
-      - 5673:5672
       - 15673:15672
     environment:
-      - RABBITMQ_NODENAME=rabbitmq-cluster-02
+      - RABBITMQ_NODENAME=rabbitmq
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
       - MASTER_NODE_HOST_NAME=${MASTER_NODE_HOST_NAME}
@@ -52,10 +51,51 @@ services:
     hostname: rabbitmq-cluster-03
     container_name: rabbitmq-cluster-03
     ports:
-      - 5674:5672
       - 15674:15672
     environment:
-      - RABBITMQ_NODENAME=rabbitmq-cluster-03
+      - RABBITMQ_NODENAME=rabbitmq
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - MASTER_NODE_HOST_NAME=${MASTER_NODE_HOST_NAME}
+    depends_on:
+      - rabbitmq-cluster-01
+    networks:
+      - mqNetwork
+    volumes:
+      - ./rabbitmq/config/enabled_plugins:/etc/rabbitmq/enabled_plugins
+
+  rabbitmq-cluster-04:
+    build:
+      context: ./rabbitmq
+      args: 
+        RABBITMQ_VERSION: ${RABBITMQ_VERSION}
+    hostname: rabbitmq-cluster-04
+    container_name: rabbitmq-cluster-04
+    ports:
+      - 15675:15672
+    environment:
+      - RABBITMQ_NODENAME=rabbitmq
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - MASTER_NODE_HOST_NAME=${MASTER_NODE_HOST_NAME}
+    depends_on:
+      - rabbitmq-cluster-01
+    networks:
+      - mqNetwork
+    volumes:
+      - ./rabbitmq/config/enabled_plugins:/etc/rabbitmq/enabled_plugins
+
+  rabbitmq-cluster-05:
+    build:
+      context: ./rabbitmq
+      args: 
+        RABBITMQ_VERSION: ${RABBITMQ_VERSION}
+    hostname: rabbitmq-cluster-05
+    container_name: rabbitmq-cluster-05
+    ports:
+      - 15676:15672
+    environment:
+      - RABBITMQ_NODENAME=rabbitmq
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
       - MASTER_NODE_HOST_NAME=${MASTER_NODE_HOST_NAME}
@@ -73,12 +113,14 @@ services:
           HAPROXY_VERSION: ${HAPROXY_VERSION}
     container_name: haproxy
     ports:
-      - 5670:5670
+      - 5672:5672
       - 8100:8100
     depends_on:
       - rabbitmq-cluster-01
       - rabbitmq-cluster-02
       - rabbitmq-cluster-03
+      - rabbitmq-cluster-04
+      - rabbitmq-cluster-05
     networks:
       - mqNetwork
     volumes:
