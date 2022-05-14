@@ -1,0 +1,10 @@
+
+ARG RABBITMQ_VERSION
+
+FROM rabbitmq:$RABBITMQ_VERSION-management
+RUN echo "Build version: $RABBITMQ_VERSION"
+COPY .erlang.cookie /var/lib/rabbitmq/.erlang.cookie
+COPY master.sh /usr/local/bin/
+ENTRYPOINT [ "/usr/local/bin/docker-entrypoint.sh" ]
+CMD chmod 400 /var/lib/rabbitmq/.erlang.cookie && \
+    /usr/local/bin/master.sh

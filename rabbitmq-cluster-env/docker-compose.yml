@@ -6,6 +6,7 @@ services:
   rabbitmq-cluster-01:
     build:
       context: ./rabbitmq
+      dockerfile: Dockerfile-master
       args: 
         RABBITMQ_VERSION: ${RABBITMQ_VERSION}
     hostname: rabbitmq-cluster-01
@@ -25,6 +26,7 @@ services:
   rabbitmq-cluster-02:
     build:
       context: ./rabbitmq
+      dockerfile: Dockerfile-slave
       args: 
         RABBITMQ_VERSION: ${RABBITMQ_VERSION}
     hostname: rabbitmq-cluster-02
@@ -46,6 +48,7 @@ services:
   rabbitmq-cluster-03:
     build:
       context: ./rabbitmq
+      dockerfile: Dockerfile-slave
       args: 
         RABBITMQ_VERSION: ${RABBITMQ_VERSION}
     hostname: rabbitmq-cluster-03
@@ -67,6 +70,7 @@ services:
   rabbitmq-cluster-04:
     build:
       context: ./rabbitmq
+      dockerfile: Dockerfile-slave
       args: 
         RABBITMQ_VERSION: ${RABBITMQ_VERSION}
     hostname: rabbitmq-cluster-04
@@ -88,6 +92,7 @@ services:
   rabbitmq-cluster-05:
     build:
       context: ./rabbitmq
+      dockerfile: Dockerfile-slave
       args: 
         RABBITMQ_VERSION: ${RABBITMQ_VERSION}
     hostname: rabbitmq-cluster-05
