@@ -13,6 +13,10 @@ func main() {
 	mqService.ExchangeDeclare("quorum.exchange", rabbitMQService.Fanout)
 	mqService.QueueBind(queueName, "quorum.queue", "quorum.exchange")
 	deliverChan := mqService.Consume(queueName, "client")
+	defer func() {
+		mqService.Close()
+	}()
+
 	forever := make(chan bool)
 	go func() {
 		for d := range deliverChan {
@@ -23,6 +27,6 @@ func main() {
 		}
 	}()
 
-	log.Printf(" [*] Awaiting RPC requests")
+	log.Printf(" [*] Awaiting Message")
 	<-forever
 }

@@ -37,6 +37,12 @@ func NewRabbitMQService() *RabbitMQService {
 	return rabbitMQService
 }
 
+func (r *RabbitMQService) Connect() {
+	r.getConnection()
+	r.getChannel()
+	r.SetQos(1, 0)
+}
+
 func (r *RabbitMQService) getConnection() *amqp.Connection {
 	connection, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s%s", r.account, r.password, r.host, r.vhost))
 	failOnError(err, "Failed to connect to RabbitMQ")
@@ -59,7 +65,7 @@ func (r *RabbitMQService) isReady() bool {
 	return r.connection != nil && r.channel != nil
 }
 
-func (r *RabbitMQService) close() {
+func (r *RabbitMQService) Close() {
 	if r.channel != nil {
 		err := r.channel.Close()
 		failOnError(err, "Failed to close channel.")
@@ -81,7 +87,6 @@ func (r *RabbitMQService) ExchangeDeclare(name string, exchangeType ExchangeType
 		false,
 		nil,
 	)
-
 	failOnError(err, "Failed to declare an exchange")
 }
 
